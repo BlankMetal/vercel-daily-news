@@ -97,7 +97,7 @@ Fetch from `GET /breaking-news` and display a banner. The API returns a random b
 
 **Skeleton fallback:** A placeholder with the same height/shape as the real banner — a colored bar with a pulsing animation. This prevents CLS (Cumulative Layout Shift) when the real content streams in.
 
-**Why dynamic (not cached):** The API returns a random item on each request. Caching it would defeat the purpose. Wrapping in Suspense means the page shell streams immediately; the banner fills in once the fetch completes.
+**Why cached with a short lifetime:** The API returns a random item on each request, but showing a different headline on every refresh undermines the "breaking" urgency. We use `"use cache"` with `cacheLife("minutes")` so the same headline sticks for ~5 minutes, then revalidates in the background. Still wrapped in Suspense for the cold-cache case.
 
 **Next.js concept:** Suspense streaming — the static shell (hero) is sent to the browser first. When the breaking news fetch resolves, React streams in the real content, replacing the skeleton. The user sees something useful immediately instead of waiting for all data.
 
@@ -235,7 +235,7 @@ Run through this checklist before committing:
 app/page.tsx (Homepage)
 ├── <Hero />                          [STATIC]   Prerendered at build
 ├── <Suspense fallback={skeleton}>
-│   └── <BreakingNewsBanner />        [DYNAMIC]  Fresh every request
+│   └── <BreakingNewsBanner />        [CACHED]   "use cache" + cacheLife("minutes")
 └── <Suspense fallback={skeleton}>
     └── <FeaturedArticles />          [CACHED]   "use cache" + cacheLife("hours")
         └── <ArticleCard /> × N       [STATIC]   Pure render, no own data
@@ -258,7 +258,7 @@ All components are Server Components — zero client-side JavaScript for the ent
 
 | Endpoint | Where | Caching |
 |----------|-------|---------|
-| `GET /breaking-news` | `BreakingNewsBanner` | None (dynamic, random per request) |
+| `GET /breaking-news` | `BreakingNewsBanner` | `"use cache"` + `cacheLife("minutes")` |
 | `GET /articles?featured=true` | `FeaturedArticles` | `"use cache"` + `cacheLife("hours")` |
 
 Both fetches happen in parallel thanks to separate Suspense boundaries.
