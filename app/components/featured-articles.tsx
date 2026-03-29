@@ -11,7 +11,7 @@ export async function FeaturedArticles() {
 
   return (
     <section id="featured" className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <h2 className="mb-8 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+      <h2 className="mb-8 text-2xl font-bold tracking-tight">
         Featured Stories
       </h2>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

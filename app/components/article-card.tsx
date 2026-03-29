@@ -14,7 +14,7 @@ export function ArticleCard({ article }: { article: Article }) {
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="group overflow-hidden rounded-lg border border-zinc-200 bg-white transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-950"
+      className="group overflow-hidden rounded-lg border border-border bg-surface transition-shadow hover:shadow-lg hover:shadow-accent/5"
     >
       <div className="relative aspect-[16/9]">
         <Image
@@ -26,18 +26,18 @@ export function ArticleCard({ article }: { article: Article }) {
         />
       </div>
       <div className="p-4">
-        <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+        <span className="text-xs font-semibold uppercase tracking-wider text-accent">
           {article.category}
         </span>
-        <h3 className="mt-1 text-lg font-semibold leading-snug text-zinc-900 group-hover:text-blue-600 dark:text-zinc-50 dark:group-hover:text-blue-400">
+        <h3 className="mt-1 text-lg font-semibold leading-snug group-hover:text-accent">
           {article.title}
         </h3>
-        <p className="mt-2 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 line-clamp-2 text-sm text-muted">
           {article.excerpt}
         </p>
         <time
           dateTime={article.publishedAt}
-          className="mt-3 block text-xs text-zinc-500 dark:text-zinc-500"
+          className="mt-3 block text-xs text-muted"
         >
           {formatDate(article.publishedAt)}
         </time>

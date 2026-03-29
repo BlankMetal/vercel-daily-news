@@ -4,6 +4,8 @@
 
 **Lessons applied:** Data Fetching Without Waterfalls, Server Components, Suspense and Streaming, Images, Cache Components, Core Web Vitals
 
+**Visual identity:** Blank Metal brand — dark-only theme, DM Sans font, magenta (`#FF33FF`) primary accent, coral (`#FF6B6B`) secondary accent. No gradients. Semantic color tokens via CSS custom properties (`--surface`, `--border`, `--muted`, `--accent`, `--accent-coral`).
+
 ---
 
 ## Pre-requisites
@@ -69,7 +71,7 @@ Create a hero section at the top of the homepage. This is a pure Server Componen
 - Large headline ("The Latest in Web Development")
 - Supporting description paragraph
 - "Browse Articles" link/button
-- Clean, prominent styling with good whitespace
+- Dark surface background (`bg-surface`), magenta accent on tagline badge and primary CTA
 
 **Why static:** The hero doesn't fetch data, so it renders instantly. This gives users immediate visual content while the breaking news and articles stream in below.
 
@@ -91,11 +93,11 @@ Fetch from `GET /breaking-news` and display a banner. The API returns a random b
 ```
 
 **What it shows:**
-- "BREAKING" badge (red/urgent styling if `urgent: true`)
+- "BREAKING" badge in coral (`#FF6B6B`)
 - Headline text
 - Link to the related article (`/articles/[slug]`) — we'll need to look up the article slug from the `articleId`, or link to `/articles/{articleId}` since our API accepts both ID and slug
 
-**Skeleton fallback:** A placeholder with the same height/shape as the real banner — a colored bar with a pulsing animation. This prevents CLS (Cumulative Layout Shift) when the real content streams in.
+**Skeleton fallback:** A placeholder with the same height/shape as the real banner — magenta-tinted background with pulsing shapes. This prevents CLS (Cumulative Layout Shift) when the real content streams in.
 
 **Why cached with a short lifetime:** The API returns a random item on each request, but showing a different headline on every refresh undermines the "breaking" urgency. We use `"use cache"` with `cacheLife("minutes")` so the same headline sticks for ~5 minutes, then revalidates in the background. Still wrapped in Suspense for the cold-cache case.
 
@@ -111,8 +113,8 @@ Before building the grid, create a reusable `ArticleCard` component that we'll u
 
 **What it shows:**
 - Article image via `next/image` with proper `sizes` attribute for responsive behavior
-- Category badge
-- Headline (linked to `/articles/[slug]`)
+- Category badge in magenta accent
+- Headline (linked to `/articles/[slug]`, magenta on hover)
 - Formatted publish date (use `Intl.DateTimeFormat` or a simple date formatter)
 - Excerpt (truncated if needed)
 
