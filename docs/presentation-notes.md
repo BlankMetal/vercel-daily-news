@@ -27,6 +27,12 @@ When we enabled `cacheComponents`, the footer's `new Date().getFullYear()` cause
 
 ---
 
+## Featured Stories grid: adapting to sparse data
+
+The assignment asks for "at least 6 articles" in the featured grid, but the API only has 1 article with `featured=true`. Rather than showing a nearly empty grid, we fetch both `featured=true` and the latest articles in parallel with `Promise.all`, then merge them — featured articles go first, recent non-featured articles fill the remaining slots, deduped by ID. This way the grid always has 6 cards regardless of how many are flagged as featured, and if the API later marks more articles as featured they'll naturally float to the front.
+
+---
+
 ## Dark-only theme is a deliberate design choice
 
 The assignment says "you are free to make your own design choices regarding colors, typography, and visual styling." There's no requirement for a light/dark toggle. The publication config API returns `"darkMode": true` as a feature flag, but that's just data — not a mandate to implement a toggle. We went dark-only using our brand identity (Blank Metal: DM Sans, magenta/coral accents) because it's a stronger, more cohesive look.
