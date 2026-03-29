@@ -15,3 +15,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Wait for the user to verify and confirm before moving to the next step.
 - Keep changes small and reviewable — one logical chunk at a time.
 - Commit frequently after each meaningful step. Vercel reviewers will look at the git history to confirm the project was built incrementally, not all at once.
+- After pushing changes, always give the user a URL to verify the result. Use the production URL (https://vercel-daily-news-ten.vercel.app) or suggest `pnpm dev` on localhost.
