@@ -88,6 +88,7 @@ function Block({ block }: { block: ContentBlock }) {
       );
 
     case "image":
+      if (!block.src) return null;
       return (
         <figure>
           <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
