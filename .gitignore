@@ -35,6 +35,9 @@ yarn-error.log*
 !.envrc
 !.env.example
 
+# direnv
+.direnv/
+
 # vercel
 .vercel
 
