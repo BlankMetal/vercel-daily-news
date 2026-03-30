@@ -86,6 +86,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </div>
       </header>
+
+      {/* Featured image */}
+      <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-lg">
+        <Image
+          src={article.image}
+          alt={article.title}
+          fill
+          priority
+          sizes="(max-width: 896px) 100vw, 896px"
+          className="object-cover"
+        />
+      </div>
     </article>
   );
 }
