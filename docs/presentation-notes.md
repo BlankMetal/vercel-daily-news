@@ -45,6 +45,12 @@ The API returns article content as a `ContentBlock[]` array (paragraph, heading,
 
 ---
 
+## Normalizing malformed bold markdown from the API
+
+Some API content has spaces before the closing `**` — e.g., `**Load times **dropped` instead of `**Load times** dropped`. This is invalid CommonMark: the spec requires the closing delimiter to be adjacent to the text, not preceded by a space. `react-markdown` follows the spec, so these render as literal asterisks. We fix this with a lightweight preprocessor (`fixBold`) that moves the trailing space outside the bold markers before passing text to `react-markdown`. This keeps us on a standards-compliant parser while gracefully handling the API's quirks.
+
+---
+
 ## Defensive rendering: API returns empty image blocks
 
 Some articles (e.g., Helly Hansen) have image content blocks with empty `src` and `alt` fields. Passing an empty string to `next/image` causes a runtime error ("Image is missing required src property"). We guard against this with a simple `if (!block.src) return null` — skip the block entirely rather than crash. This is a good example of validating at the system boundary: we trust our own components, but the API is an external data source that can return unexpected shapes.
