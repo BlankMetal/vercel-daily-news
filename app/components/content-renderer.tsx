@@ -3,6 +3,12 @@ import Markdown from "react-markdown";
 import Image from "next/image";
 import type { ContentBlock } from "@/lib/types";
 
+// The API sometimes has spaces before closing ** (e.g., "**bold **text")
+// which is invalid CommonMark. Normalize by removing the trailing space.
+function fixBold(text: string): string {
+  return text.replace(/\*\*(.+?) \*\*/g, "**$1** ");
+}
+
 const markdownComponents: Components = {
   a: ({ href, children }) => (
     <a
@@ -25,7 +31,7 @@ const inlineComponents: Components = {
 };
 
 function InlineMarkdown({ text }: { text: string }) {
-  return <Markdown components={inlineComponents}>{text}</Markdown>;
+  return <Markdown components={inlineComponents}>{fixBold(text)}</Markdown>;
 }
 
 export function ContentRenderer({ blocks }: { blocks: ContentBlock[] }) {
@@ -43,7 +49,7 @@ function Block({ block }: { block: ContentBlock }) {
     case "paragraph":
       return (
         <div className="leading-relaxed text-gray-300">
-          <Markdown components={markdownComponents}>{block.text}</Markdown>
+          <Markdown components={markdownComponents}>{fixBold(block.text)}</Markdown>
         </div>
       );
 
