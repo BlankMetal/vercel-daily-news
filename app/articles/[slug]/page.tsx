@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getArticle } from "@/lib/api";
+import { ContentRenderer } from "@/app/components/content-renderer";
+import { TrendingArticles } from "@/app/components/trending-articles";
+import { TrendingArticlesSkeleton } from "@/app/components/skeletons";
 
 function formatDate(dateString: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -98,6 +102,25 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           className="object-cover"
         />
       </div>
+
+      {/* Article content */}
+      <ContentRenderer blocks={article.content} />
+
+      {/* Subscribe CTA — wired up in Phase 4 */}
+      <div className="mt-12 rounded-lg border border-border bg-surface p-8 text-center">
+        <h3 className="text-xl font-bold">Enjoy this article?</h3>
+        <p className="mt-2 text-muted">
+          Subscribe to Vercel Daily News for full access to all articles.
+        </p>
+        <button className="mt-4 rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-white hover:bg-accent/80">
+          Subscribe
+        </button>
+      </div>
+
+      {/* Trending articles — own Suspense boundary, loads independently */}
+      <Suspense fallback={<TrendingArticlesSkeleton />}>
+        <TrendingArticles excludeId={article.id} />
+      </Suspense>
     </article>
   );
 }
