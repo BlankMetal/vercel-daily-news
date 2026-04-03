@@ -3,20 +3,18 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { createSubscription, subscribe, unsubscribe } from "./api";
-
-const COOKIE_NAME = "vnews-sub-token";
-const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
+import { SUBSCRIPTION_COOKIE, SUBSCRIPTION_COOKIE_MAX_AGE } from "./constants";
 
 export async function subscribeAction() {
   const { token } = await createSubscription();
   await subscribe(token);
 
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, token, {
+  cookieStore.set(SUBSCRIPTION_COOKIE, token, {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: COOKIE_MAX_AGE,
+    maxAge: SUBSCRIPTION_COOKIE_MAX_AGE,
   });
 
   revalidatePath("/", "layout");
@@ -24,11 +22,11 @@ export async function subscribeAction() {
 
 export async function unsubscribeAction() {
   const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
+  const token = cookieStore.get(SUBSCRIPTION_COOKIE)?.value;
 
   if (token) {
     await unsubscribe(token);
-    cookieStore.delete(COOKIE_NAME);
+    cookieStore.delete(SUBSCRIPTION_COOKIE);
   }
 
   revalidatePath("/", "layout");
