@@ -57,6 +57,15 @@ export function ArticlePageSkeleton() {
   );
 }
 
+export function SearchResultsSkeleton({ count = 12 }: { count?: number } = {}) {
+  return (
+    <div>
+      <div className="mb-6 h-7 w-40 animate-pulse rounded bg-border" />
+      <ArticleGridSkeleton count={count} />
+    </div>
+  );
+}
+
 export function TrendingArticlesSkeleton() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
