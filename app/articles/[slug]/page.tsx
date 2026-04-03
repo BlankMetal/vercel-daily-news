@@ -3,9 +3,11 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getArticle } from "@/lib/api";
+import { getSubscriptionStatus } from "@/lib/subscription";
 import { ContentRenderer } from "@/app/components/content-renderer";
 import { TrendingArticles } from "@/app/components/trending-articles";
 import { TrendingArticlesSkeleton } from "@/app/components/skeletons";
+import { SubscribeButton } from "@/app/components/subscribe-button";
 
 function formatDate(dateString: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -55,6 +57,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
+  const { isSubscribed } = await getSubscriptionStatus();
+
+  const paragraphs = article.content.filter((b) => b.type === "paragraph");
+  const visibleBlocks = paragraphs.slice(0, 3);
+  const fadedBlocks = paragraphs.slice(3, 5);
+
   return (
     <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       {/* Article header */}
@@ -103,24 +111,39 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         />
       </div>
 
-      {/* Article content */}
-      <ContentRenderer blocks={article.content} />
+      {isSubscribed ? (
+        <>
+          <ContentRenderer blocks={article.content} />
 
-      {/* Subscribe CTA — wired up in Phase 4 */}
-      <div className="mt-12 rounded-lg border border-border bg-surface p-8 text-center">
-        <h3 className="text-xl font-bold">Enjoy this article?</h3>
-        <p className="mt-2 text-muted">
-          Subscribe to Vercel Daily News for full access to all articles.
-        </p>
-        <button className="mt-4 rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-white hover:bg-accent/80">
-          Subscribe
-        </button>
-      </div>
+          <Suspense fallback={<TrendingArticlesSkeleton />}>
+            <TrendingArticles excludeId={article.id} />
+          </Suspense>
+        </>
+      ) : (
+        <>
+          {/* Teaser: first 3 paragraphs fully visible */}
+          <ContentRenderer blocks={visibleBlocks} />
 
-      {/* Trending articles — own Suspense boundary, loads independently */}
-      <Suspense fallback={<TrendingArticlesSkeleton />}>
-        <TrendingArticles excludeId={article.id} />
-      </Suspense>
+          {/* Next 2 paragraphs fade out */}
+          <div className="relative overflow-hidden">
+            <ContentRenderer blocks={fadedBlocks} />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+          </div>
+
+          {/* Paywall CTA */}
+          <div className="rounded-lg border border-border bg-surface p-8 text-center">
+            <h3 className="text-xl font-bold">
+              Subscribe to continue reading
+            </h3>
+            <p className="mt-2 text-muted">
+              Get full access to all articles on Vercel Daily News.
+            </p>
+            <div className="mt-4">
+              <SubscribeButton />
+            </div>
+          </div>
+        </>
+      )}
     </article>
   );
 }
