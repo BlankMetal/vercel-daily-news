@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Hero } from "./components/hero";
 import { BreakingNewsBanner } from "./components/breaking-news-banner";
 import { FeaturedArticles } from "./components/featured-articles";
+import { LatestArticles } from "./components/latest-articles";
 import {
   BreakingNewsSkeleton,
   ArticleGridSkeleton,
@@ -18,6 +19,10 @@ export default function HomePage() {
 
       <Suspense fallback={<ArticleGridSkeleton />}>
         <FeaturedArticles />
+      </Suspense>
+
+      <Suspense fallback={<ArticleGridSkeleton count={12} />}>
+        <LatestArticles />
       </Suspense>
     </>
   );

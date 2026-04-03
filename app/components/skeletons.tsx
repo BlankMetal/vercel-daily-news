@@ -23,12 +23,21 @@ export function ArticleCardSkeleton() {
   );
 }
 
-export function ArticleGridSkeleton() {
+export function ArticleGridSkeleton({ count = 6 }: { count?: number } = {}) {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }, (_, i) => (
+      {Array.from({ length: count }, (_, i) => (
         <ArticleCardSkeleton key={i} />
       ))}
+    </div>
+  );
+}
+
+export function TrendingArticlesSkeleton() {
+  return (
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+      <div className="mb-8 h-8 w-48 animate-pulse rounded bg-border" />
+      <ArticleGridSkeleton count={3} />
     </div>
   );
 }
