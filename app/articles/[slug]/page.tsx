@@ -6,7 +6,10 @@ import { getArticle } from "@/lib/api";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { ContentRenderer } from "@/app/components/content-renderer";
 import { TrendingArticles } from "@/app/components/trending-articles";
-import { TrendingArticlesSkeleton } from "@/app/components/skeletons";
+import {
+  ArticlePageSkeleton,
+  TrendingArticlesSkeleton,
+} from "@/app/components/skeletons";
 import { SubscribeCTA } from "@/app/components/subscribe-cta";
 
 function formatDate(dateString: string) {
@@ -47,7 +50,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+async function ArticleContent({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
 
   let article;
@@ -65,7 +72,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <article className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      {/* Article header */}
       <header>
         <span className="text-xs font-semibold uppercase tracking-wider text-accent">
           {article.category}
@@ -99,7 +105,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
       </header>
 
-      {/* Featured image */}
       <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-lg">
         <Image
           src={article.image}
@@ -121,10 +126,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </>
       ) : (
         <>
-          {/* Teaser: first 3 paragraphs fully visible */}
           <ContentRenderer blocks={visibleBlocks} />
 
-          {/* Next 2 paragraphs fade out */}
           <div className="relative overflow-hidden">
             <ContentRenderer blocks={fadedBlocks} />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
@@ -134,5 +137,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </>
       )}
     </article>
+  );
+}
+
+export default function ArticlePage({ params }: ArticlePageProps) {
+  return (
+    <Suspense fallback={<ArticlePageSkeleton />}>
+      <ArticleContent params={params} />
+    </Suspense>
   );
 }
