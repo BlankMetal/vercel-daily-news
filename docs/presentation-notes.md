@@ -27,12 +27,6 @@ When we enabled `cacheComponents`, the footer's `new Date().getFullYear()` cause
 
 ---
 
-## Featured Stories grid: adapting to sparse data
-
-The assignment asks for "at least 6 articles" in the featured grid, but the API only has 1 article with `featured=true`. Rather than showing a nearly empty grid, we fetch both `featured=true` and the latest articles in parallel with `Promise.all`, then merge them — featured articles go first, recent non-featured articles fill the remaining slots, deduped by ID. This way the grid always has 6 cards regardless of how many are flagged as featured, and if the API later marks more articles as featured they'll naturally float to the front.
-
----
-
 ## Dark-only theme is a deliberate design choice
 
 The assignment says "you are free to make your own design choices regarding colors, typography, and visual styling." There's no requirement for a light/dark toggle. The publication config API returns `"darkMode": true` as a feature flag, but that's just data — not a mandate to implement a toggle. We went dark-only using our brand identity (Blank Metal: DM Sans, magenta/coral accents) because it's a stronger, more cohesive look.
@@ -54,6 +48,18 @@ Some API content has spaces before the closing `**` — e.g., `**Load times **dr
 ## Defensive rendering: API returns empty image blocks
 
 Some articles (e.g., Helly Hansen) have image content blocks with empty `src` and `alt` fields. Passing an empty string to `next/image` causes a runtime error ("Image is missing required src property"). We guard against this with a simple `if (!block.src) return null` — skip the block entirely rather than crash. This is a good example of validating at the system boundary: we trust our own components, but the API is an external data source that can return unexpected shapes.
+
+---
+
+## Hero CTA: "Browse Articles" → `/search`
+
+The hero originally had two buttons — "Browse Articles" (anchor to `#featured`) and "Search" (link to `/search`). The anchor jump felt pointless since the featured grid is right below the hero. There's no separate "all articles" page in the assignment — the search page defaults to showing recent articles when there's no query, so it doubles as a chronological browse view. We consolidated to a single "Browse Articles" CTA linking to `/search`, with the header nav still providing a "Search" link. Two entry points, same destination, different user intent.
+
+---
+
+## One-click subscribe with easy undo
+
+The subscription API has a two-step flow: `POST /subscription/create` returns a token, then `POST /subscription` activates it. We combine both into a single Server Action — one click subscribes, one click unsubscribes. No confirmation dialogs. The rationale: the action is trivially reversible (click the opposite button), so adding friction would just hurt UX. The token is stored in an HTTP-only cookie (`SameSite=Lax`) — HTTP-only because the token is only used in server-side fetches (never needs JS access), which protects against XSS token theft. `SameSite=Lax` sends the cookie on normal top-level navigations but blocks cross-site subrequests, preventing CSRF without breaking inbound links.
 
 ---
 

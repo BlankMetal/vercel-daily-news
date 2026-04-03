@@ -14,18 +14,12 @@ export function Hero() {
           News, tutorials, and insights from the Vercel ecosystem. Stay up to
           date with the tools and techniques shaping the modern web.
         </p>
-        <div className="mt-8 flex items-center justify-center gap-4">
+        <div className="mt-8">
           <Link
-            href="#featured"
+            href="/search"
             className="rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-white hover:bg-accent/80"
           >
             Browse Articles
-          </Link>
-          <Link
-            href="/search"
-            className="rounded-full border border-border px-6 py-2.5 text-sm font-medium text-muted hover:border-accent/50 hover:text-white"
-          >
-            Search
           </Link>
         </div>
       </div>

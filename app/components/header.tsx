@@ -1,4 +1,12 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import { SubscriptionIndicator } from "./subscription-indicator";
+
+function SubscribeButtonSkeleton() {
+  return (
+    <div className="h-8 w-24 animate-pulse rounded-full bg-border" />
+  );
+}
 
 export function Header() {
   return (
@@ -21,9 +29,9 @@ export function Header() {
           >
             Search
           </Link>
-          <button className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-accent/80">
-            Subscribe
-          </button>
+          <Suspense fallback={<SubscribeButtonSkeleton />}>
+            <SubscriptionIndicator />
+          </Suspense>
         </div>
       </nav>
     </header>
