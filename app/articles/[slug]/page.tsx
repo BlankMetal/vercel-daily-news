@@ -7,7 +7,7 @@ import { getSubscriptionStatus } from "@/lib/subscription";
 import { ContentRenderer } from "@/app/components/content-renderer";
 import { TrendingArticles } from "@/app/components/trending-articles";
 import { TrendingArticlesSkeleton } from "@/app/components/skeletons";
-import { SubscribeButton } from "@/app/components/subscribe-button";
+import { SubscribeCTA } from "@/app/components/subscribe-cta";
 
 function formatDate(dateString: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -130,18 +130,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
           </div>
 
-          {/* Paywall CTA */}
-          <div className="rounded-lg border border-border bg-surface p-8 text-center">
-            <h3 className="text-xl font-bold">
-              Subscribe to continue reading
-            </h3>
-            <p className="mt-2 text-muted">
-              Get full access to all articles on Vercel Daily News.
-            </p>
-            <div className="mt-4">
-              <SubscribeButton />
-            </div>
-          </div>
+          <SubscribeCTA />
         </>
       )}
     </article>
