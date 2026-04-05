@@ -12,6 +12,7 @@ export async function subscribeAction() {
   const cookieStore = await cookies();
   cookieStore.set(SUBSCRIPTION_COOKIE, token, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: SUBSCRIPTION_COOKIE_MAX_AGE,
