@@ -7,6 +7,7 @@ import { SearchResultsSkeleton } from "@/app/components/skeletons";
 
 export const metadata: Metadata = {
   title: "Search",
+  description: "Search and filter articles by keyword or category.",
 };
 
 type SearchPageProps = {
