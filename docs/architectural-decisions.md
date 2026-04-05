@@ -1,6 +1,6 @@
-# Presentation Notes
+# Architectural Decisions
 
-Things worth mentioning in the video review.
+Key design decisions and the reasoning behind them.
 
 ---
 
@@ -23,7 +23,7 @@ This is enabled by `cacheComponents: true` in `next.config.ts`, which replaced t
 
 ## `new Date()` breaks PPR static prerendering
 
-When we enabled `cacheComponents`, the footer's `new Date().getFullYear()` caused a build error. PPR enforces strict rules: static components must be deterministic (no runtime values). The fix was making the footer a Cache Component with `"use cache"` — the year is computed once at cache time and revalidated on the default schedule. Good example of how PPR forces you to be intentional about which content is static, cached, or dynamic.
+When we enabled `cacheComponents`, the footer's `new Date().getFullYear()` caused a build error. PPR enforces strict rules: static components must be deterministic (no runtime values). The fix was making the footer a Cache Component with `"use cache"` — the year is computed once at cache time and revalidated on the default schedule. This illustrates how PPR forces you to be intentional about which content is static, cached, or dynamic.
 
 ---
 
@@ -47,7 +47,7 @@ Some API content has spaces before the closing `**` — e.g., `**Load times **dr
 
 ## Defensive rendering: API returns empty image blocks
 
-Some articles (e.g., Helly Hansen) have image content blocks with empty `src` and `alt` fields. Passing an empty string to `next/image` causes a runtime error ("Image is missing required src property"). We guard against this with a simple `if (!block.src) return null` — skip the block entirely rather than crash. This is a good example of validating at the system boundary: we trust our own components, but the API is an external data source that can return unexpected shapes.
+Some articles (e.g., Helly Hansen) have image content blocks with empty `src` and `alt` fields. Passing an empty string to `next/image` causes a runtime error ("Image is missing required src property"). We guard against this with a simple `if (!block.src) return null` — skip the block entirely rather than crash. This follows the principle of validating at the system boundary: we trust our own components, but the API is an external data source that can return unexpected shapes.
 
 ---
 
@@ -85,7 +85,7 @@ The caching strategy maps directly to how often data changes:
 
 On the article detail page, the article fetch (`getArticle`) is cached but the subscription check (`getSubscriptionStatus`) is not — it reads `cookies()`, which is inherently dynamic (it depends on the current user). We run both in parallel with `Promise.all` so the subscription check doesn't add latency on top of the article fetch. On a warm cache, `getArticle` returns instantly and only the subscription check hits the network.
 
-This is the "Parallel + Cache" pattern from the data fetching lesson: cache the expensive operations, parallelize the rest, total time = max(cached, fresh) instead of sum of all.
+This is the "Parallel + Cache" pattern: cache the expensive operations, parallelize the rest, total time = max(cached, fresh) instead of sum of all.
 
 ---
 
