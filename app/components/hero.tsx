@@ -17,7 +17,7 @@ export function Hero() {
         <div className="mt-8">
           <Link
             href="/search"
-            className="rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-white hover:bg-accent/80"
+            className="rounded-full bg-accent px-6 py-2.5 text-sm font-medium text-black hover:bg-accent/80"
           >
             Browse Articles
           </Link>

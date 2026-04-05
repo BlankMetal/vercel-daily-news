@@ -10,7 +10,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-accent/80 disabled:opacity-50"
+      className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-black hover:bg-accent/80 disabled:opacity-50"
     >
       {pending ? "Subscribing…" : "Subscribe"}
     </button>
