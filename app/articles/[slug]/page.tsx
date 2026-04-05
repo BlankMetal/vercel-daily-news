@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getArticle } from "@/lib/api";
+import { getArticle, getArticles } from "@/lib/api";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { ContentRenderer } from "@/app/components/content-renderer";
 import { TrendingArticles } from "@/app/components/trending-articles";
@@ -18,6 +18,11 @@ function formatDate(dateString: string) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(dateString));
+}
+
+export async function generateStaticParams() {
+  const { data: articles } = await getArticles({ limit: 50 });
+  return articles.map((article) => ({ slug: article.slug }));
 }
 
 type ArticlePageProps = {
