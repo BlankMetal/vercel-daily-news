@@ -63,13 +63,15 @@ async function ArticleContent({
   const { slug } = await params;
 
   let article;
+  let isSubscribed;
   try {
-    article = await getArticle(slug);
+    [article, { isSubscribed }] = await Promise.all([
+      getArticle(slug),
+      getSubscriptionStatus(),
+    ]);
   } catch {
     notFound();
   }
-
-  const { isSubscribed } = await getSubscriptionStatus();
 
   const paragraphs = article.content.filter((b) => b.type === "paragraph");
   const visibleBlocks = paragraphs.slice(0, 3);

@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import type {
   Article,
   BreakingNews,
@@ -57,6 +58,10 @@ export async function getArticles(params?: GetArticlesParams) {
 }
 
 export async function getArticle(idOrSlug: string) {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("article", idOrSlug);
+
   const res = await apiFetch<ApiResponse<Article>>(
     `/articles/${encodeURIComponent(idOrSlug)}`
   );
