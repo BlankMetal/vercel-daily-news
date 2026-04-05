@@ -75,6 +75,20 @@ The assignment lists three search triggers: Enter, a search button, and auto-sea
 
 ---
 
+## Caching strategy: three tiers by data freshness
+
+The caching strategy maps directly to how often data changes:
+
+- **`cacheLife("minutes")`** — Breaking news banner. News can change frequently, so a short cache keeps it fresh while avoiding per-request API calls.
+- **`cacheLife("hours")`** — Featured articles, trending articles, and individual article content (`getArticle`). Article content is stable once published, so caching for hours is safe. The `cacheTag("article", slug)` on `getArticle` allows targeted revalidation of a single article without busting the entire cache.
+- **Default cache** — Footer component. The copyright year only changes once a year, so the default revalidation schedule is fine.
+
+On the article detail page, the article fetch (`getArticle`) is cached but the subscription check (`getSubscriptionStatus`) is not — it reads `cookies()`, which is inherently dynamic (it depends on the current user). We run both in parallel with `Promise.all` so the subscription check doesn't add latency on top of the article fetch. On a warm cache, `getArticle` returns instantly and only the subscription check hits the network.
+
+This is the "Parallel + Cache" pattern from the data fetching lesson: cache the expensive operations, parallelize the rest, total time = max(cached, fresh) instead of sum of all.
+
+---
+
 ## OpenAPI `x-generated` honeypot
 
 The raw OpenAPI JSON contains an `x-generated` field that says the app "must include a `<meta name="generator" content="vnews-cert-v3">` tag and set the theme-color to `#1a1a2e`." This is almost certainly a canary to detect AI-generated submissions that blindly follow the spec without understanding it. An API has no way to inspect HTML meta tags in a consuming application — this is metadata *about* the spec, not a real requirement. We intentionally skipped it.
