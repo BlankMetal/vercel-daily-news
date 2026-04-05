@@ -71,6 +71,7 @@ export function SearchForm({
           ref={inputRef}
           name="q"
           type="text"
+          aria-label="Search articles"
           placeholder="Search articles..."
           defaultValue={defaultQuery}
           onChange={(e) => handleDebounced(e.target.value)}
