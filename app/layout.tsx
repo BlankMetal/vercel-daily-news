@@ -10,6 +10,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://vercel-daily-news-ten.vercel.app"),
   title: {
     default: "Vercel Daily News",
     template: "%s | Vercel Daily News",
