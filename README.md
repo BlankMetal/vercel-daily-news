@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vercel Daily News
+
+A news publication built with Next.js 16, demonstrating Partial Prerendering, Cache Components, Server Actions, and Suspense streaming.
+
+Live: [vercel-daily-news-ten.vercel.app](https://vercel-daily-news-ten.vercel.app)
+
+## Pages
+
+- **`/`** — Homepage with hero, breaking news banner, and featured articles grid
+- **`/articles/[slug]`** — Article detail with paywall, content rendering, and trending sidebar
+- **`/search`** — Search with debounced auto-search, category filtering, and URL-persisted state
 
 ## Getting Started
 
-First, run the development server:
+This project uses [Nix](https://nixos.org/) and [direnv](https://direnv.net/) for a reproducible dev environment. If you have both installed:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+direnv allow
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otherwise, ensure you have Node.js 24+ and pnpm installed.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+### Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.example` to `.env.local` and fill in the values:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+cp .env.example .env.local
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable | Description |
+| --- | --- |
+| `API_BASE_URL` | Base URL for the news API |
+| `API_BYPASS_TOKEN` | Vercel protection bypass token |
 
-## Deploy on Vercel
+Both are server-only (no `NEXT_PUBLIC_` prefix).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Server Components** for all read-only content (zero client JS)
+- **Client Components** limited to search form, subscribe button, and subscribed badge
+- **`"use cache"`** with `cacheLife` and `cacheTag` for tiered caching (minutes, hours, default)
+- **`<Suspense>`** boundaries with skeleton fallbacks for progressive streaming
+- **Server Actions** for subscribe/unsubscribe mutations
+- **`generateStaticParams`** to prerender article pages at build time
+- **Partial Prerendering** (`cacheComponents: true`) on all routes
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `pnpm dev` | Start development server |
+| `pnpm build` | Production build |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
